@@ -2,7 +2,6 @@ package gombus
 
 import (
 	"fmt"
-	"time"
 )
 
 func RequestUD2(primaryID uint8) ShortFrame {
@@ -131,15 +130,10 @@ func SetPrimaryUsingPrimary(oldPrimary uint8, newPrimary uint8) LongFrame {
 }
 
 // ReadAllFrames supports FCB and reads out all frames from the device using primaryID.
-func ReadAllFrames(conn Conn, primaryID int) ([]*DecodedFrame, error) {
+func ReadAllFrames(conn Transport, primaryID int) ([]*DecodedFrame, error) {
 	frame := SndNKE(uint8(primaryID))
 	fmt.Printf("sending nke: % x\n", frame)
 	_, err := conn.Write(frame)
-	if err != nil {
-		return nil, err
-	}
-
-	err = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +176,7 @@ func ReadAllFrames(conn Conn, primaryID int) ([]*DecodedFrame, error) {
 }
 
 // ReadSingleFrame reads one frame from the device. Does not reset device before asking.
-func ReadSingleFrame(conn Conn, primaryID int) (*DecodedFrame, error) {
+func ReadSingleFrame(conn Transport, primaryID int) (*DecodedFrame, error) {
 	frame := RequestUD2(uint8(primaryID))
 	if _, err := conn.Write(frame); err != nil {
 		return nil, err

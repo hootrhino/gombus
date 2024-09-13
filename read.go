@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"time"
 )
 
 /*
@@ -23,7 +22,7 @@ import (
 */
 var ErrNoLongFrameFound = fmt.Errorf("no long frame found")
 
-func ReadLongFrame(conn Conn) (LongFrame, error) {
+func ReadLongFrame(conn io.Reader) (LongFrame, error) {
 	buf := make([]byte, 4096)
 	tmp := make([]byte, 4096)
 
@@ -31,11 +30,6 @@ func ReadLongFrame(conn Conn) (LongFrame, error) {
 	length := 0
 	globalN := -1
 	for {
-		err := conn.SetReadDeadline(time.Now().Add(2 * time.Second))
-		if err != nil {
-			return LongFrame{}, fmt.Errorf("error from SetReadDeadline: %w", err)
-		}
-
 		n, err := conn.Read(tmp)
 		if err != nil {
 			return LongFrame{}, fmt.Errorf("error reading from connection: %w", err)

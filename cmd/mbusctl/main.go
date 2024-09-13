@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jonaz/gombus"
+	"github.com/hootrhino/gombus"
 	"github.com/sirupsen/logrus"
 )
 
